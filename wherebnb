@@ -58,7 +58,7 @@ function runHelp() {
     parameter
   );
 }
-// Functio to find top cities in country
+// Function to find top cities in country
 function getTopCities() {
   axios
     .get(
