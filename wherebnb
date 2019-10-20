@@ -1,16 +1,8 @@
 const Slackbot = require("slackbots");
 const axios = require("axios");
 
-// Data set according to 2019 sources
-// const suggestions = {
-//     "popular": ["Rome, Italy", "Paris, France", "Santorini, Greece"],
-//     "relaxing": ["Costa Rica", "Coromandel Peninsula, New Zealand", "Lake Bled, Slovenia"],
-//     "affordable": ["Lima, Peru", "Sao Paulo", "Hanoi, Vietnam"],
-//     "adventurous": [],
-// }
-
 const bot = new Slackbot({
-  token: "xoxb-795411415089-795412411537-ghSCAtV1D7eHnuYaYes8Q3iA",
+  token: "****",
   name: "wherebnb.bot"
 });
 
@@ -42,7 +34,7 @@ bot.on("message", data => {
   handleInput(data.text);
 });
 
-// Message response
+// Handling Input Message
 
 function handleInput(message) {
   if (message.includes(" help ")) {
@@ -66,7 +58,7 @@ function runHelp() {
     parameter
   );
 }
-// Find top cities in country
+// Functio to find top cities in country
 function getTopCities() {
   axios
     .get(
