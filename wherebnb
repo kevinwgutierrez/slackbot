@@ -1,0 +1,93 @@
+const Slackbot = require("slackbots");
+const axios = require("axios");
+
+// Data set according to 2019 sources
+// const suggestions = {
+//     "popular": ["Rome, Italy", "Paris, France", "Santorini, Greece"],
+//     "relaxing": ["Costa Rica", "Coromandel Peninsula, New Zealand", "Lake Bled, Slovenia"],
+//     "affordable": ["Lima, Peru", "Sao Paulo", "Hanoi, Vietnam"],
+//     "adventurous": [],
+// }
+
+const bot = new Slackbot({
+  token: "xoxb-795411415089-795412411537-ghSCAtV1D7eHnuYaYes8Q3iA",
+  name: "wherebnb.bot"
+});
+
+//Starting bot
+
+bot.on("start", () => {
+  const parameter = {
+    icon_emoji: ":bowtie:"
+  };
+
+  bot.postMessageToChannel(
+    "general",
+    "Hi I'm your travelbot @WhereBNB! I'm here to help you find the best cities to travel to in each country! (for assistance type: 'help')",
+    parameter
+  );
+});
+
+// Function for handling errors
+
+bot.on("error", err => console.log(err));
+
+// Function for handling message
+
+bot.on("message", data => {
+  if (data.type !== "message") {
+    return;
+  }
+
+  handleInput(data.text);
+});
+
+// Message response
+
+function handleInput(message) {
+  if (message.includes(" help ")) {
+    runHelp();
+  } else if (message.length === 1) {
+    getTopCities();
+  } else {
+    return;
+  }
+}
+
+// Function responding to help message
+
+function runHelp() {
+  const parameter = {
+    icon_emoji: ":question:"
+  };
+  bot.postMessageToChannel(
+    "general",
+    `Mention @WhereBNB type in one country name at a time." `,
+    parameter
+  );
+}
+// Find top cities in country
+function getTopCities() {
+  axios
+    .get(
+      `https://www.triposo.com/api/20190906/location.json?part_of=${message}&tag_labels=city&count=3&fields=id,name,score,snippet&order_by=-score`
+    )
+    .then(response => {
+      const topCities = response.data.results.map(city => city.name);
+      const topCitiesSummary = response.data.results.map(city => city.snippet);
+
+      const parameter = {
+        icon_emoji: ":smile:"
+      };
+
+      bot.postMessageToChannel(
+        "general",
+        `The top cities in ${message} are:\n 
+        ${topCities[0]}: ${topCitiesSummary[0]}\n
+        ${topCities[1]}: ${topCitiesSummary[1]}\n 
+        ${topCities[2]}: ${topCitiesSummary[2]}`,
+        parameter
+      );
+    });
+}
+
